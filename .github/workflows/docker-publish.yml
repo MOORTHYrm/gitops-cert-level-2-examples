@@ -9,7 +9,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      docker_tag:
+      docker_tag: '1.0'
         description: 'Docker tag'
         required: true
         default: 'latest' 
