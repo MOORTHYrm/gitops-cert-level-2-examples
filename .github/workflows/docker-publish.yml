@@ -12,7 +12,7 @@ on:
       docker_tag:
         description: 'Docker tag'
         required: true
-        default: 'latest' 
+        default: '1.0' 
         type: string
 
 
