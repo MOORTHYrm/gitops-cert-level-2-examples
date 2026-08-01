@@ -1,22 +1,28 @@
----
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: simple-deployment
-  namespace: example02
-  annotations:
-    creation: at-{{ now | date "20160102150405" }}
+  name: helm-example02
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  selector:
-    matchLabels:
-      app: trivial-go-web-app
-  template:
-    metadata:
-      labels:
-        app: trivial-go-web-app
-    spec:
-      containers:
-      - name: webserver-simple
-        image: docker.io/kostiscodefresh/gitops-simple-app:v1.0
-        ports:
-        - containerPort: 8080
+  project: default
+  source:
+    repoURL: https://github.com/MOORTHYrm/gitops-cert-level-2-examples.git
+    targetRevision: HEAD
+    path: ./custom-diff/02-external-app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: example02
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - '.metadata.annotations.creation'
+    - group: ""
+      kind: Secret
+      jqPathExpressions:
+        - '.data."my-password"'
